@@ -1,11 +1,11 @@
 #IMPORT WEBPAGE
-from urllib.request import urlopen
-#html = urlopen("https://fvo.org.uk/media/events/2019/dec/15/Abbotshaugh-2019-season-finale/bpf7l/index.html").read()
-#html = urlopen("https://fvo.org.uk/media/events/2019/dec/11/mine-woods/967iz/index.html").read()
-#html = urlopen("https://www.esoc.org.uk/results-files/2019/1019_Bonaly/Results/index.html").read()
-html = urlopen("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_brown_course.html").read()  # Pentland SOL brown results
-#html = urlopen("https://www.stag-orienteering.co.uk/results-archive/2020/2020-01-05-pollok-country-park/index.html").read()
-
+import requests
+#html = requests.get()"https://fvo.org.uk/media/events/2019/dec/15/Abbotshaugh-2019-season-finale/bpf7l/index.html").text
+#html = requests.get("https://fvo.org.uk/media/events/2019/dec/11/mine-woods/967iz/index.html").text
+#html = requests.get("https://www.esoc.org.uk/results-files/2019/1019_Bonaly/Results/index.html").text
+#html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_brown_course.html").text  # Pentland SOL brown results
+#html = requests.get("https://www.stag-orienteering.co.uk/results-archive/2020/2020-01-05-pollok-country-park/index.html").text
+html = requests.get("https://moravianorienteering.org/sites/default/files/events/2020/20200216%20Darnaway%20SOL1/index.html").text
 
 #SET UP SOUP
 from bs4 import BeautifulSoup
@@ -102,7 +102,7 @@ print("The courses were ")
 for x in courseList:
     print(x)
 
-print(resultsDictionary)
+#print(resultsDictionary)
 
 while True:
     question = input("Any results queries?\n")
@@ -120,8 +120,8 @@ clubsearch = input("Do you want to search based by club?\n")
 if clubsearch == "yes" or clubsearch == "Yes":
     clubToBeSearched = input("Which club do you want to search on?\n")
     clubToBeSearched = clubToBeSearched.upper()
-    for x in resultsDictionary:
+    for x in courseList:
         for y in resultsDictionary[x]:
             if resultsDictionary[x][y]["club"] == clubToBeSearched:
-                intperson = resultsDictionary[x][y]
-                print("{}: {}, {}, {}, {}, {}".format(intperson["course"], intperson["name"], intperson["club"], intperson["pos"], intperson["age class"], intperson["time"]))
+                result = resultsDictionary[x][y]
+                print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))

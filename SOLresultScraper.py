@@ -1,9 +1,21 @@
+
+
+
+#Find out why club search is not working
+
+
+
+
 #IMPORT WEBPAGE
-from urllib.request import urlopen
-html = urlopen("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_index.html").read()  # Pentland SOL brown results
-html = urlopen("https://www.scottish6days.com/results/2019/multistage_index.html").read()
-html = urlopen("https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/stage1_index.html").read()
-html = urlopen("http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/stage5_index.html").read()
+import requests
+
+#html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_index.html").text  # Pentland SOL brown results
+#html = requests.get("https://www.scottish6days.com/results/2019/multistage_index.html").text
+#html = requests.get("https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/stage1_index.html").text
+html = requests.get("http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/stage5_index.html").text
+#html = requests.get("https://www.scottish6days.com/results/2019/stage1_index.html").text
+#html = requests.get("")
+
 #SET UP SOUP
 from bs4 import BeautifulSoup
 soup = BeautifulSoup(html, 'html.parser')
@@ -16,17 +28,18 @@ resultsDictionary = {}  #courses will be added as keys in line 30, then position
 orderOfFields = []
 
 def findResults(url):
-    subhtml = urlopen(url).read()
+    subhtml = requests.get(url).text
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(subhtml, 'html.parser')
     import re
-    hyperlinks = []
+
+    print("processing results...")
 
     orderOfFields = []
     for x in soup.thead.tr.findAll("th"):
         xtext = x.text.lower()
-        orderOfFields.append(xtext)
 
+        orderOfFields.append(xtext)
     lengthOfOrderOfFields = len(orderOfFields)
 
 
@@ -34,6 +47,7 @@ def findResults(url):
 
     results = soup.findAll("div", {"class": "resultsblock"})	#finds divs with the class "resultsblock"
     for x in results:
+        print("finding course")
         course = (x.div.h2.text)	#sets course to the course name
         course = course.lower()
         resultsDictionary[course] = {}
@@ -101,19 +115,22 @@ def findResults(url):
 
 #actual program now
 
-submenus = soup.findAll("div", {"class": "submenu"})
+submenus = soup.div.div.findAll("div", {"class": "submenu"})
 for x in submenus:
+    print(x.h3)
     if x.h3.has_attr("Split"):
+        print(x)
         pass
     else:
 
         for y in x.findAll("a"):
             if y.has_attr('href'):
                 ystring = y.get('href')                        #PROBLEM CURRENTLY IS THAT EVERY OTHER <a> TAG HAS NO HYPERLINK IN IT
-                url = "https://www.esoc.org.uk/results-files/2019/0922-pentland/{}".format(ystring)
-                url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
+                #url = "https://www.esoc.org.uk/results-files/2019/0922-pentland/{}".format(ystring)
+                #url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
                 #url = "https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/{}".format(ystring)
-                url = "http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/{}".format(ystring)
+                #url = "http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/{}".format(ystring)
+                url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
                 findResults(url)
             else:
                 pass
@@ -122,11 +139,16 @@ for x in submenus:
 
 
 print("Results found and sorted :)\n")
-print("The courses were ")
+print("The courses were")
 for x in courseList:
     print(x)
 
+print("The keys were")
+print(orderOfFields)
+for x in orderOfFields:
+    print(x)
 
+#print(resultsDictionary)
 
 while True:
     question = input("Any results queries?\n")
@@ -150,6 +172,11 @@ while True:
             for y in resultsDictionary[x]:
                 if resultsDictionary[x][y]["club"] == clubToBeSearched:
                     intperson = resultsDictionary[x][y]
-                    print("{}: {}, {}, {}, {}, {}".format(intperson["course"], intperson["name"], intperson["club"], intperson["pos"], intperson["age class"], intperson["time"]))
+                    print("{}".format(intperson["course"]))
+                    print("{}".format(intperson["name"]))
+                    print("{}".format(intperson["pos"]))
+                    print("{}".format(intperson["club"]))
+                    print("{}".format(intperson["age class"]))
+                    #print("{}: {}, {}, {}, {}, {}".format(intperson["course"], intperson["name"], intperson["club"], intperson["pos"], intperson["age class"], intperson["time"]))
     else:
         break
