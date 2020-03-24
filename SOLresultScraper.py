@@ -1,16 +1,14 @@
-#club search should now work but the rest doesn't do i don't know for sure
-
-
+#PROBLEM: i think it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
 
 
 #IMPORT WEBPAGE
 import requests
 
-#html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_index.html").text  # Pentland SOL brown results
+html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_index.html").text  # Pentland SOL brown results
 #html = requests.get("https://www.scottish6days.com/results/2019/multistage_index.html").text
 #html = requests.get("https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/stage1_index.html").text
 #html = requests.get("http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/stage5_index.html").text
-html = requests.get("https://www.scottish6days.com/results/2019/stage1_index.html").text
+#html = requests.get("https://www.scottish6days.com/results/2019/stage1_index.html").text
 #html = requests.get("").text
 
 #SET UP SOUP
@@ -112,6 +110,8 @@ def findResults(url):
 
 #actual program now
 
+#i think it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
+
 submenus = soup.div.div.findAll("div", {"class": "submenu"})
 for x in submenus:
     print(x.h3)
@@ -123,11 +123,11 @@ for x in submenus:
         for y in x.findAll("a"):
             if y.has_attr('href'):
                 ystring = y.get('href')                        #PROBLEM CURRENTLY IS THAT EVERY OTHER <a> TAG HAS NO HYPERLINK IN IT
-                #url = "https://www.esoc.org.uk/results-files/2019/0922-pentland/{}".format(ystring)
+                url = "https://www.esoc.org.uk/results-files/2019/0922-pentland/{}".format(ystring)
                 #url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
                 #url = "https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/{}".format(ystring)
                 #url = "http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/{}".format(ystring)
-                url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
+                #url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
                 print(url)
                 findResults(url)
             else:
@@ -162,17 +162,22 @@ while True:
 
 
 while True:
-    clubsearch = input("Do you want to search based on club\n")
-    if clubsearch == "yes" or clubsearch == "Yes":
-        clubToBeSearched = input("Which club do you want to search on?\n")
-        clubToBeSearched = clubToBeSearched.upper()
+    search = input("Do you want to search based on another category?\n")
+    if search == "yes" or search == "Yes":
+
+        print("The categories are:", orderOfFields)
+        category = input("Which category do you want to search on?\n")
+
+        searchValue = input("Search value?\n")
+        searchValue = searchValue.upper()
+
         for course in resultsDictionary:
             
             for position in resultsDictionary[course]:
                 
-                #this line ¬ checks that the key 'club' exists, as some competitors don't have a club
-                if "club" in resultsDictionary[course][position]:
-                    if resultsDictionary[course][position]["club"] == clubToBeSearched:
+                #this line ¬ checks that the key exists, as some competitors don't have a club or an age or a value for 'behind'
+                if category in resultsDictionary[course][position]:
+                    if (resultsDictionary[course][position][category]).upper() == searchValue:
                         result = resultsDictionary[course][position]
                         print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
     else:
