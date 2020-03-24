@@ -105,7 +105,7 @@ for x in courseList:
 #print(resultsDictionary)
 
 while True:
-    question = input("Any results queries?\n")
+    question = str(input("Any results queries?\n"))
     if question == "yes" or question == "Yes":
         chosenCourse = input("Which course?\n")
         chosenPos = input("Which postion do you want (1st, 2nd, 3rd, 4th etc)\n")

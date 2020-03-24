@@ -12,9 +12,9 @@ import requests
 #html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_index.html").text  # Pentland SOL brown results
 #html = requests.get("https://www.scottish6days.com/results/2019/multistage_index.html").text
 #html = requests.get("https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/stage1_index.html").text
-html = requests.get("http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/stage5_index.html").text
-#html = requests.get("https://www.scottish6days.com/results/2019/stage1_index.html").text
-#html = requests.get("")
+#html = requests.get("http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/stage5_index.html").text
+html = requests.get("https://www.scottish6days.com/results/2019/stage1_index.html").text
+#html = requests.get("").text
 
 #SET UP SOUP
 from bs4 import BeautifulSoup
@@ -131,6 +131,7 @@ for x in submenus:
                 #url = "https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/{}".format(ystring)
                 #url = "http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/{}".format(ystring)
                 url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
+                print(url)
                 findResults(url)
             else:
                 pass
