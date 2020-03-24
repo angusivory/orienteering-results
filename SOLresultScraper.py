@@ -1,7 +1,4 @@
-
-
-
-#Find out why club search is not working
+#club search should now work but the rest doesn't do i don't know for sure
 
 
 
@@ -169,15 +166,14 @@ while True:
     if clubsearch == "yes" or clubsearch == "Yes":
         clubToBeSearched = input("Which club do you want to search on?\n")
         clubToBeSearched = clubToBeSearched.upper()
-        for x in resultsDictionary:
-            for y in resultsDictionary[x]:
-                if resultsDictionary[x][y]["club"] == clubToBeSearched:
-                    intperson = resultsDictionary[x][y]
-                    print("{}".format(intperson["course"]))
-                    print("{}".format(intperson["name"]))
-                    print("{}".format(intperson["pos"]))
-                    print("{}".format(intperson["club"]))
-                    print("{}".format(intperson["age class"]))
-                    #print("{}: {}, {}, {}, {}, {}".format(intperson["course"], intperson["name"], intperson["club"], intperson["pos"], intperson["age class"], intperson["time"]))
+        for course in resultsDictionary:
+            
+            for position in resultsDictionary[course]:
+                
+                #this line ¬ checks that the key 'club' exists, as some competitors don't have a club
+                if "club" in resultsDictionary[course][position]:
+                    if resultsDictionary[course][position]["club"] == clubToBeSearched:
+                        result = resultsDictionary[course][position]
+                        print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
     else:
         break
