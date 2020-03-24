@@ -115,17 +115,24 @@ while True:
     else:
         break
 
-clubsearch = input("Do you want to search based by club?\n")
+while True:
+    search = input("Do you want to search based on another category?\n")
+    if search == "yes" or search == "Yes":
 
-if clubsearch == "yes" or clubsearch == "Yes":
-    clubToBeSearched = input("Which club do you want to search on?\n")
-    clubToBeSearched = clubToBeSearched.upper()
-    for course in resultsDictionary:
-        
-        for position in resultsDictionary[course]:
+        print("The categories are:", orderOfFields)
+        category = input("Which category do you want to search on?\n")
+
+        searchValue = input("Search value?\n")
+        searchValue = searchValue.upper()
+
+        for course in resultsDictionary:
             
-            #this line ¬ checks that the key 'club' exists, as some competitors don't have a club
-            if "club" in resultsDictionary[course][position]:
-                if resultsDictionary[course][position]["club"] == clubToBeSearched:
-                    result = resultsDictionary[course][position]
-                    print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
+            for position in resultsDictionary[course]:
+                
+                #this line ¬ checks that the key exists, as some competitors don't have a club or an age or a value for 'behind'
+                if category in resultsDictionary[course][position]:
+                    if (resultsDictionary[course][position][category]).upper() == searchValue:
+                        result = resultsDictionary[course][position]
+                        print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
+    else:
+        break
