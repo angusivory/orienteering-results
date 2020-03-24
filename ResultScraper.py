@@ -1,3 +1,5 @@
+#this program extracts results on the same page as the link, it cannot open child pages off the main index. SOlresultScraper.py does that
+
 #IMPORT WEBPAGE
 import requests
 #html = requests.get()"https://fvo.org.uk/media/events/2019/dec/15/Abbotshaugh-2019-season-finale/bpf7l/index.html").text
@@ -42,9 +44,7 @@ for x in results:
     for y in allTRs:
         number = 1
         allTDs = y.findAll("td")	#each <tr> tag has 6 <td> tags which hold each field
-        for z in allTDs:
-            #print(z.text)
-            
+        for z in allTDs:            
             if number == 1:
                 if number > lengthOfOrderOfFields:
                     pass
@@ -108,8 +108,8 @@ while True:
     question = str(input("Any results queries?\n"))
     if question == "yes" or question == "Yes":
         chosenCourse = input("Which course?\n")
-        chosenPos = input("Which postion do you want (1st, 2nd, 3rd, 4th etc)\n")
-        #print(resultsDictionary[chosenCourse][chosenPos])
+        chosenPos = input("Which postion do you want (1st, 2nd, 3rd, 4th etc)?\n")
+        #print(resultsDictionary[chosenCourse][chosenPos])  this just prints the dictionary entry with no nice formatting
         result = resultsDictionary[chosenCourse][chosenPos]
         print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]])) # prints a fancy formatted version (ask Dad how)
     else:
@@ -120,8 +120,12 @@ clubsearch = input("Do you want to search based by club?\n")
 if clubsearch == "yes" or clubsearch == "Yes":
     clubToBeSearched = input("Which club do you want to search on?\n")
     clubToBeSearched = clubToBeSearched.upper()
-    for x in courseList:
-        for y in resultsDictionary[x]:
-            if resultsDictionary[x][y]["club"] == clubToBeSearched:
-                result = resultsDictionary[x][y]
-                print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
+    for course in resultsDictionary:
+        
+        for position in resultsDictionary[course]:
+            
+            #this line ¬ checks that the key 'club' exists, as some competitors don't have a club
+            if "club" in resultsDictionary[course][position]:
+                if resultsDictionary[course][position]["club"] == clubToBeSearched:
+                    result = resultsDictionary[course][position]
+                    print("{}: {}, {}, {}, {}, {}".format(result["course"], result[orderOfFields[0]], result[orderOfFields[1]], result[orderOfFields[2]], result[orderOfFields[3]], result[orderOfFields[4]]))
