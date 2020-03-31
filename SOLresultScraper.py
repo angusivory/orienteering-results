@@ -26,15 +26,14 @@ def findResults(url):
     subhtml = requests.get(url).text
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(subhtml, 'html.parser')
-    import re
 
-    print("processing results...")
-
-    orderOfFields = []
-    for x in soup.thead.tr.findAll("th"):
-        xtext = x.text.lower()
-
-        orderOfFields.append(xtext)
+    #orderOfFields is a list containing all the keys for each position, e.g. name, age class, club, time etc
+    if len(orderOfFields) == 0:
+        #orderOfFields = []
+        for x in soup.thead.tr.findAll("th"):
+            xtext = x.text.lower()
+            orderOfFields.append(xtext)
+        print(orderOfFields)
     lengthOfOrderOfFields = len(orderOfFields)
 
 
@@ -42,7 +41,7 @@ def findResults(url):
 
     results = soup.findAll("div", {"class": "resultsblock"})	#finds divs with the class "resultsblock"
     for x in results:
-        print("finding course")
+        #print("finding course")
         course = (x.div.h2.text)	#sets course to the course name
         course = course.lower()
         resultsDictionary[course] = {}
@@ -110,8 +109,9 @@ def findResults(url):
 
 #actual program now
 
-#i think it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
-submenus = soup.div.div.findAll("div", {"class": "submenu"})
+#PROBLEM:   it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
+#SOLUTION   it was looking for soup.div.div.div class="submenu" --> it was narrowing down the search options by looking only in divs of divs, problem solved now.
+submenus = soup.findAll("div", {"class": "submenu"})
 for x in submenus:
     print(x.h3)
     if x.h3.has_attr("Split"):
@@ -121,13 +121,12 @@ for x in submenus:
 
         for y in x.findAll("a"):
             if y.has_attr('href'):
-                ystring = y.get('href')                        #PROBLEM CURRENTLY IS THAT EVERY OTHER <a> TAG HAS NO HYPERLINK IN IT
+                ystring = y.get('href')
                 url = "https://www.esoc.org.uk/results-files/2019/0922-pentland/{}".format(ystring)
                 #url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
                 #url = "https://www.esoc.org.uk/results-files/2019/0203_BroxburnSprint/Results/{}".format(ystring)
                 #url = "http://www.rstrain.ndtilda.co.uk/results_18/scot_spring/{}".format(ystring)
                 #url = "https://www.scottish6days.com/results/2019/{}".format(ystring)
-                print(url)
                 findResults(url)
             else:
                 pass
@@ -140,10 +139,6 @@ print("The courses were")
 for x in courseList:
     print(x)
 
-print("The keys were")
-print(orderOfFields)
-for x in orderOfFields:
-    print(x)
 
 #print(resultsDictionary)
 
