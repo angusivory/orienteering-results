@@ -2,10 +2,10 @@
 
 #IMPORT WEBPAGE
 import requests
-#html = requests.get()"https://fvo.org.uk/media/events/2019/dec/15/Abbotshaugh-2019-season-finale/bpf7l/index.html").text
+#html = requests.get("https://fvo.org.uk/media/events/2019/dec/15/Abbotshaugh-2019-season-finale/bpf7l/index.html").text
 #html = requests.get("https://fvo.org.uk/media/events/2019/dec/11/mine-woods/967iz/index.html").text
 #html = requests.get("https://www.esoc.org.uk/results-files/2019/1019_Bonaly/Results/index.html").text
-#html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_brown_course.html").text  # Pentland SOL brown results
+#html = requests.get("https://www.esoc.org.uk/results-files/2019/0922-pentland/stage2_brown_course.html").text  # Pentland SOL BROWN only results
 #html = requests.get("https://www.stag-orienteering.co.uk/results-archive/2020/2020-01-05-pollok-country-park/index.html").text
 html = requests.get("https://moravianorienteering.org/sites/default/files/events/2020/20200216%20Darnaway%20SOL1/index.html").text
 

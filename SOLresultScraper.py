@@ -111,7 +111,6 @@ def findResults(url):
 #actual program now
 
 #i think it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
-
 submenus = soup.div.div.findAll("div", {"class": "submenu"})
 for x in submenus:
     print(x.h3)
