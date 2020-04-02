@@ -2,37 +2,54 @@
 <html>
     <head>
         <title>Results Platform</title>
-        <style>
-            h1 {
-                text-align: center;
-                text-decoration: none;
-                color: red;
-                font-size: 30px;
-                font-family: Times New Roman;
-            }
-            h2 {
-                text-align: left;
-                color: black;
-                font-size: 20px;
-                font-family: Times New Roman;
-            }
-            .answer {
-                color: blue;
-            }
-        </style>
-
+        <link rel="stylesheet" type="text/css" href="website.css">
     </head>
 
     <body>
-        <h1 style="text-align:center">SI Results Scraper</h1>
-        
-        <div>
-            <p class="answer">results url: _____</p>
-            <p>category to display e.g. course, club, pos, age class: _____</p>
-            <button>Get results</button>
+		<div class="header" id="header">
+			<img style="float:right" src="okite.jpg" height="55">
+			<h1 style="float:middle">O-Results Finder</h1>
+		</div>
+		<div class="about">
+			<h2>About</h2>
+			<p>Looking for results for your newsletter?
+			Or to see how your clubmates have done at recent events?
+			<p><strong>O-Results Finder</strong> is the quick and easy way to search for your clubmembers' results, straight from the BOF website!</p>
+		</div>
+
+		<div class="howtouse">
+			<h2>How to use this</h2>
+			<p>
+				<ol>
+					<li>Head over to the <a href="https://www.britishorienteering.org.uk/results">BOF results page</a></li>
+					<li>Navigate (get it?) to the page of the event you want to search on</li>
+					<li>Paste the url into the form below</li>
+					<li>Enter the club abbreviation that you want results from</li>
+					<li>Please also put your name in, this is for analytical purposes.</li>
+				</ol>
+			<p>
+		</div>
+
+        <div class="resultsform">
+            <h2>Results Form</h2>
+			<form action="getResults.php" target="_blank" method="GET">
+				<label for="url">BOF event URL:</label><br>
+				<input type="text" id="url" name="url" value=""><br>
+				<label for="club">Specified club</label><br>
+				<input type="text" id="club" name="club" value=""><br>
+				<label for="name">Your name:</label><br>
+				<input type="text" id="name" name="name" value=""><br><br>
+				<input id="submit" type="submit" value="Get results">
+			</form> 
         </div>
-
-
-
-    </body>
+		
+		<div class="footer">
+			<h3>powered by</h3>
+			<a href="https://www.interlopers.org.uk"><img src="interlopers.jfif"></a>
+		</div>
+		
+		<script>
+			
+		</script>
+	</body>
 </html>
