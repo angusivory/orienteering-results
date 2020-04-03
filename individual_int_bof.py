@@ -1,6 +1,9 @@
 import requests
 resultsDictionary = {}
 
+#part of getResults() function from intBof.py 
+#when run on its own, it finds all the club results for one course on a url
+
 def checkClub(club):
     for y in x.findAll("td"):
         if y.text == club:

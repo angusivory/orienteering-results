@@ -12,16 +12,16 @@ body {
                 text-align: left;
                 color: black;
                 font-size: 30px;
-                font-family: Times New Roman;
+                font-family: sans-serif;
             }
 			p, li {
 				font-size: 20px;
-				font-family: Times New Roman;
+				font-family: sans-serif;
 				color:black;
 				}
 			input, label {
 				font-size: 17px;
-				font-family: Times New Roman;
+				font-family: sans-serif;
 			}
             
 			a {
@@ -43,7 +43,7 @@ body {
 				margin-bottom: 15px;
 				border-style: solid;
 				border-width: 2px;
-				border-radius: 15px;
+				border-radius: 10px;
 				}
 			.howtouse {
 				background-color: #fdff7a;
@@ -52,7 +52,7 @@ body {
 				margin-bottom: 15px;
 				border-style: solid;
 				border-width: 2px;
-				border-radius: 15px;
+				border-radius: 10px;
 			}
 			.resultsform {
 				background-color: lightgrey;
@@ -62,7 +62,7 @@ body {
 				margin-bottom: 10px;
 				border-style: solid;
 				border-width: 2px;
-				border-radius: 15px;
+				border-radius: 10px;
 			}
 			.footer {
 				background-color: white;
@@ -72,5 +72,5 @@ body {
 				margin-bottom: 10px;
 				border-style: solid;
 				border-width: 2px;
-				border-radius: 15px;			
+				border-radius: 10px;			
 			}

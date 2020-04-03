@@ -1,4 +1,4 @@
-#PROBLEM: i think it doesn't find any 'submenus', so doesn't actually get round to calling findResults(), as the procedure doesn't run at all.
+#give it the url for a club's result page and it will find the results from that event, you can search it on course or club or position etc
 
 
 #IMPORT WEBPAGE

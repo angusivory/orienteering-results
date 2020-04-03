@@ -1,7 +1,7 @@
 import requests
 resultsDictionary = {}
 
-#part of getResults() function
+#part of getResults() function in bofScraper.py
     #will incorporate this back into bofScraper.py later
 
 number = 1

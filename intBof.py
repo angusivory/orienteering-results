@@ -1,4 +1,5 @@
-#Eventually this should look through the BOF site for past results in a time period and find all the interlopers from those events and print them out.
+#An event's url is inputed and the program looks for all the people of a certain club in that event.
+
 #BOF results page: https://www.britishorienteering.org.uk/results
 
 import requests

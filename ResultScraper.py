@@ -1,4 +1,4 @@
-#this program extracts results on the same page as the link, it cannot open child pages off the main index. SOlresultScraper.py does that
+#this program extracts results on the same page as the link (i.e it does it for one course), it cannot open child pages off the main index. SOlresultScraper.py does that
 
 #IMPORT WEBPAGE
 import requests
