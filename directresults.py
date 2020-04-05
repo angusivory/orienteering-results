@@ -2,10 +2,17 @@ import requests
 
 dateFrom = str(input("Set date from which to get results (dd/mm/yyyy)\n"))
 dateFrom = dateFrom.split("/")  #dateFrom is now a list: item 0 is the day, item 1 is the month, item 2 is the year
+
+dateTo = str(input("Set end date to get results until (dd/mm/yyyy)\nIf you don't want a specific end date, type 'now'\n"))
+if dateTo == "now":
+    dateTo = ["0", "0", "0"]
+else:
+    dateTo = dateTo.split("/")
+
 level = input("What level events? Type '0' for all, '1' for Major, '2' for National, '3' for Regional or '-4' for all except local.\n")
 
                                                         #this bit ¬ 'page=0' is a problem - even with showing 100 entries per page there are still multiple pages, the next with 'page=1' and 'page=2' if there are that many events. 
-website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club=0&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d=0&evt_end_m=0&evt_end_y=0&evt_assoc=0&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(level, dateFrom[0], dateFrom[1], dateFrom[2]))
+website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club=0&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d={}&evt_end_m={}&evt_end_y={}&evt_assoc=0&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(level, dateFrom[0], dateFrom[1], dateFrom[2], dateTo[0], dateTo[1], dateTo[2]))
 club = str(input("Which club do you want to search for?\n"))
 club = club.upper()
 
@@ -151,3 +158,6 @@ for x in resultsDictionary:
     if "url" in resultsDictionary[x]:
         eventpage = ("https://www.britishorienteering.org.uk{}".format(resultsDictionary[x]["url"]))
         getEventResults(eventpage, club)
+
+
+#https://www.britishorienteering.org.uk/index.php?pg=results&bAdvanced=&evt_name=&evt_postcode=&evt_radius=0&evt_assoc=0&event_club=0&evt_level=0&evt_type=0&event_start=01%2F01%2F2020&evt_start_y=2020&evt_start_m=1&evt_start_d=1&event_end=&evt_end_y=&evt_end_m=&evt_end_d=&perpage=100&bSearch=Search&pg=results
