@@ -76,7 +76,6 @@ def getEventResults(eventpage, club):
 
     #MAIN PROGRAM LOOP
     event = soup.find("h2", {"id": "pagesubheading"})
-    print(".")
     #print("\n", event.text)
 
 
@@ -117,6 +116,8 @@ def getEventResults(eventpage, club):
                     print(result["name"], "was", ordinalPos, "on", result["course"])
                 else:
                     print(result["name"], "was", ordinalPos, "on", result["course"])
+    else:
+        print(".")
 
 
 
@@ -139,11 +140,14 @@ for x in eventTable.tbody.findAll("tr"):
         elif number == 6:
             minidict["venue"] = y.text
         elif number == 7:
-                minidict["url"] = y.a.get('href')
+                aas = y.find("a")
+                if aas:
+                    minidict["url"] = y.a.get('href')
         number += 1
     resultsDictionary[keyno] = minidict
     keyno += 1
 
 for x in resultsDictionary:
-    eventpage = ("https://www.britishorienteering.org.uk{}".format(resultsDictionary[x]["url"]))
-    getEventResults(eventpage, club)
+    if "url" in resultsDictionary[x]:
+        eventpage = ("https://www.britishorienteering.org.uk{}".format(resultsDictionary[x]["url"]))
+        getEventResults(eventpage, club)
