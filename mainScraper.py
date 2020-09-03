@@ -12,8 +12,8 @@ else:
 level = input("What level events? Type '0' for all, '1' for Major, '2' for National, '3' for Regional or '-4' for all except local.\n")
 
                                                         #this bit ¬ 'page=0' is a problem - even with showing 100 entries per page there are still multiple pages, the next with 'page=1' and 'page=2' if there are that many events. 
-website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club=0&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d={}&evt_end_m={}&evt_end_y={}&evt_assoc=0&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(level, dateFrom[0], dateFrom[1], dateFrom[2], dateTo[0], dateTo[1], dateTo[2]))
-club = str(input("Which club do you want to search for?\n"))
+website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club=0&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d=0&evt_end_m=0&evt_end_y=0&evt_assoc=0&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(level, dateFrom[0], dateFrom[1], dateFrom[2]))
+club = str(input("Which club do you want to search for? (use abbr.)\n"))
 club = club.upper()
 
 #SET UP SOUP
@@ -52,17 +52,16 @@ def getEventResults(eventpage, club):
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(subhtml, 'html.parser')
 
-        course = soup.find("strong").text
+        course = soup.find("strong").text ###for some reason this is being stupid
+
         course = course.split("(")[0].rstrip().lstrip().lower()   #splits the string on the '(', takes the first item (which is the course name), and removes spaces from either side of the course name
-        #print(course)
+        #print("course: {}".format(course))
         eventDict[course] = {}
 
         #FIND RESULTS
         for x in soup.tbody.findAll("tr"):
             number = 1
-            checkClub(club)
             if checkClub(club) is True:
-                #print("club correct")
                 for y in x.findAll("td"):
                     if number == 1:
                         position = y.text
@@ -83,14 +82,13 @@ def getEventResults(eventpage, club):
 
     #MAIN PROGRAM LOOP
     event = soup.find("h2", {"id": "pagesubheading"})
-    #print("\n", event.text)
-
+    print(".")
 
     #adds all the course hyperlinks to a list
     courseLinks.append(eventpage)
     for x in soup.findAll("a"):
         if x.has_attr("href"):
-            if 'course' in x.get('href'):
+            if 'course=' in x.get('href'):
                 course = x.get('href')
                 course = "https://www.britishorienteering.org.uk/{}".format(course)
                 courseLinks.append(course)
@@ -122,9 +120,7 @@ def getEventResults(eventpage, club):
                 if "course" in result["course"]:
                     print(result["name"], "was", ordinalPos, "on", result["course"])
                 else:
-                    print(result["name"], "was", ordinalPos, "on", result["course"])
-    else:
-        print(".")
+                    print(result["name"], "was", ordinalPos, "on the", result["course"])
 
 
 
@@ -147,9 +143,10 @@ for x in eventTable.tbody.findAll("tr"):
         elif number == 6:
             minidict["venue"] = y.text
         elif number == 7:
-                aas = y.find("a")
-                if aas:
+                try:
                     minidict["url"] = y.a.get('href')
+                except:
+                    pass
         number += 1
     resultsDictionary[keyno] = minidict
     keyno += 1
