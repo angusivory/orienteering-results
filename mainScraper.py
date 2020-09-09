@@ -1,28 +1,10 @@
 import requests
+import datetime
+now = datetime.datetime.now()
 
-#add search for age classes
+#add location search? - 25 miles of inputted postcode, or, ideally, looks up postcode from a town the user enters
 
-#add search for postcode, radius 25 or 50 miles
-
-dateFrom = str(input("Set date from which to get results (dd/mm/yyyy)\n"))
-dateFrom = dateFrom.split("/")
-if not len(dateFrom) == 3:
-    dateFrom = ["0", "0", "0"]
-
-dateTo = str(input("Set end date to get results until (dd/mm/yyyy)\nIf you don't want a specific end date, type 'now'\n"))
-dateTo = dateTo.split("/")
-if not len(dateTo) == 3:
-    dateTo = ["0", "0", "0"]
-
-
-level = input("What level events? Type '0' for all, '1' for Major, '2' for National, '3' for Regional or '-4' for all except local.\n")
-assoc = input("[opt] Specify region: BOF, BSOA, EAOA, EMOA, NEOA, NIOA, NWOA, SCOA, SEOA, SOA, SWOA, WMOA, WOA, YHOA, all.\n").upper()
-associations = {"BOF": 14, "BSOA": 13, "EAOA": 1, "EMOA": 2, "NEOA": 3, "NIOA": 4, "NWOA": 5, "SCOA": 6, "SEOA": 7, "SOA": 8, "SWOA": 9, "WMOA": 10, "WOA": 11, "YHOA": 12}
-if assoc in associations:
-    assoc_num = associations[assoc]
-else:
-    assoc_num = 0
-host_club = input("[opt] Specify host club abbr. or 'any'\n").upper()
+searchYOBs = []
 listofclubs = {"AIRE": 23, "AROS": 147, "AUOC": 158, "AYROC": 58, "BADO": 89, "BAOC": 117, 
                 "BASOC": 62, "BKO": 91, "BL": 60, "BOF": 152, "BOK": 44, "CHIG": 92, 
                 "CLARO": 24, "CLOK": 41, "CLYDE": 63, "COBOC": 38, "CUOC": 112, "DEE": 61, 
@@ -42,90 +24,59 @@ listofclubs = {"AIRE": 23, "AROS": 147, "AUOC": 158, "AYROC": 58, "BADO": 89, "B
                 "SWOC": 57, "SYO": 28, "TAY": 84, "TINTO": 86, "TVOC": 104, "UBOC": 132, 
                 "WAOC": 37, "WAROC": 83, "WCH": 42, "WCOC": 85, "WIGHTO": 106, "WIM": 51, 
                 "WRE": 43, "WSX": 52, "XPLORER": 160}
-if host_club in listofclubs:
-    host_club_num = listofclubs[host_club]
-else:
-    host_club_num = 0    
 
-website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club={}&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d={}&evt_end_m={}&evt_end_y={}&evt_assoc={}&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(level, host_club_num, dateFrom[0], dateFrom[1], dateFrom[2], dateTo[0], dateTo[1], dateTo[2], assoc_num))
+def check_age_valid(ageClass):
+    if not ageClass[0].isalpha():
+        return False
+    
+    try:
+        value = int(ageClass[1:])
+        return True
+    except:
+        return False
 
-searchClub = str(input("Which club do you want to search for? (use abbr.)\n"))
-searchClub = searchClub.upper()
+def round_to_five(x, base=5):
+    return base * round(x/base)
 
-print("Searching all {} level {} results hosted by {} from {}/{}/{} to {}/{}/{} in the {} region.".format(searchClub, level, host_club, dateFrom[0], dateFrom[1], dateFrom[2], dateTo[0], dateTo[1], dateTo[2], assoc))
+def agetoyears():
+    ageClass = str(input("Which age class do you want to search for? (e.g. M14, W21)\n"))
+    
+    while not check_age_valid(ageClass):
+        ageClass = str(input("Please use correct format e.g. M14, W21, not '{}'\n".format(ageClass)))
+        
+    gender = ageClass[0].upper()
+    age = int(ageClass[1:])
+    print("age: {}, gender: {}".format(age, gender))
 
+    searchterms = []
 
-#SET UP SOUP
-html = requests.get(website).text
-from bs4 import BeautifulSoup
-soup = BeautifulSoup(html, 'html.parser')
-import re
-hyperlinks = []
-eventDict = {}
-keyno = 1
+    if age < 21:
+        searchterms.append(str(now.year - int(age)))
+        searchterms.append(str(now.year - (int(age) - 1)))
+    elif 21 <= age <= 34:
+        for year in range(now.year - 34, now.year - 20):
+            searchterms.append(str(year))
+    else:
+        if age >= 100:
+            print("senior years eh")
+        age5 = round_to_five(age)
+        for year in range(now.year - (age5 + 4), now.year - (age5 - 1)):
+            searchterms.append(str(year))
 
-#getEventResults(website, club) function
-def getEventResults(eventpage, venue, searchClub):
+    return searchterms
+
+def getEventResults(eventpage, venue, SearchInfo):
     #SET UP SOUP
     html = requests.get(eventpage).text
     from bs4 import BeautifulSoup
     soup = BeautifulSoup(html, 'html.parser')
 
-    #results for each course are stored between the <table> tags.
-    #DESIGN: from the event page: the program should put all the course hyperlinks into a list, do getResults() function on each of them.
     courseLinks = []
     resultsForEvent = {}
 
-    #Function for retrieving results for each course
-    def getResults(url, searchClub):
-
-        #Function for checking if the club matches the inputed club             Why can't i define this elsewhere? - it only works if it is defined inside of this function.
-        def checkClub(searchClub):
-            for y in x.findAll("td"):
-                if y.text == searchClub:
-                    return True
-
-        number = 1
-        subhtml = requests.get(url).text
-        from bs4 import BeautifulSoup
-        soup = BeautifulSoup(subhtml, 'html.parser')
-
-        try:
-            course = soup.find("strong").text ###for some reason this is being stupid
-        except:
-            pass    #some events have no linked results, hence no strong text
-
-        course = course.split("(")[0].rstrip().lstrip().lower()   #splits the string on the '(', takes the first item (which is the course name), and removes spaces from either side of the course name
-        #print("course: {}".format(course))
-        resultsForEvent[course] = {}
-
-        #FIND RESULTS
-        for x in soup.tbody.findAll("tr"):
-            number = 1
-            if checkClub(searchClub) is True:
-                for y in x.findAll("td"):
-                    if number == 1:
-                        position = y.text
-                        resultsForEvent[course][position] = {}
-                        resultsForEvent[course][position]["pos"] = y.text
-                        resultsForEvent[course][position]["course"] = course
-                    elif number == 2:
-                        resultsForEvent[course][position]["name"] = y.text
-                    elif number == 3:
-                        resultsForEvent[course][position]["club"] = y.text
-                    elif number == 6:
-                        #resultsForEvent[course][position]["time"] = y.text
-                        pass
-                    else:
-                        pass
-                    number += 1
-
-
-    #MAIN PROGRAM LOOP
     event = soup.find("h2", {"id": "pagesubheading"})
     print(".")
 
-    #adds all the course hyperlinks to a list
     courseLinks.append(eventpage)
     for x in soup.findAll("a"):
         if x.has_attr("href"):
@@ -135,7 +86,7 @@ def getEventResults(eventpage, venue, searchClub):
                 courseLinks.append(course)
 
     for url in courseLinks:
-        getResults(url, searchClub)
+        getCourseResults(url, SearchInfo, resultsForEvent)
 
 
     #after all the results have been found
@@ -161,19 +112,118 @@ def getEventResults(eventpage, venue, searchClub):
                     ordinalPos = result["pos"]
 
                 if "course" in result["course"]:
-                    print(result["name"], "was", ordinalPos, "on", result["course"])
+                    #print(result["name"], "was", ordinalPos, "on", result["course"])
+                    print("{}, {} was {} on {}".format(result["name"], result["club"], ordinalPos, result["course"]))
                 else:
-                    print(result["name"], "was", ordinalPos, "on the", result["course"])
+                    #print(result["name"], "was", ordinalPos, "on the", result["course"])
+                    print("{}, {} was {} on the {} course".format(result["name"], result["club"], ordinalPos, result["course"]))
+
+def getCourseResults(url, searchInfo, resultsForEvent):
+    coursepage = requests.get(url).text
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(coursepage, 'html.parser')
+
+    try:
+        course = soup.find("strong").text ###for some reason this is being stupid
+        goahead = True
+    except:
+        goahead = False    #some events have no linked results, hence no strong text
 
 
+    if goahead == True:
+        course = course.split("(")[0].rstrip().lstrip().lower()   #splits the string on the '(', takes the first item (which is the course name), and removes spaces from either side of the course name
+        #print("course: {}".format(course))
+        resultsForEvent[course] = {}
+
+        #FIND RESULTS
+        number = 1
+        for x in soup.tbody.findAll("tr"):
+            number = 1
+            if SearchInfo.searchType == "age":
+                query_check = checkAgeClass(x, SearchInfo.searchQuery)
+            elif SearchInfo.searchType == "club":
+                query_check = checkClub(x, SearchInfo.searchQuery)
+            
+            if query_check == True:    
+                for y in x.findAll("td"):
+                    if number == 1:
+                        position = y.text
+                        resultsForEvent[course][position] = {}
+                        resultsForEvent[course][position]["pos"] = y.text
+                        resultsForEvent[course][position]["course"] = course
+                    elif number == 2:
+                        resultsForEvent[course][position]["name"] = y.text
+                    elif number == 3:
+                        resultsForEvent[course][position]["club"] = y.text
+                    elif number == 6:
+                        #resultsForEvent[course][position]["time"] = y.text
+                        pass
+                    else:
+                        pass
+                    number += 1
+
+def checkClub(tr, searchClub):
+    for field in tr.findAll("td"):
+        if field.text == searchClub:
+            return True
+    return False
+
+def checkAgeClass(tr, searchyears):
+    for field in tr.findAll("td"):
+        if str(field.text) in searchyears:
+            return True
+    return False
+
+class Params():
+    def __init__(self):
+        self.associations = {"BOF": 14, "BSOA": 13, "EAOA": 1, "EMOA": 2, "NEOA": 3, "NIOA": 4, "NWOA": 5, "SCOA": 6, "SEOA": 7, "SOA": 8, "SWOA": 9, "WMOA": 10, "WOA": 11, "YHOA": 12}
+        self.dateFrom = str(input("Set date from which to get results (dd/mm/yyyy)\n"))
+        self.dateFrom = self.dateFrom.split("/")
+        if not len(self.dateFrom) == 3:
+            self.dateFrom = ["0", "0", "0"]
+
+        self.dateTo = str(input("Set end date to get results until (dd/mm/yyyy)\nIf you don't want a specific end date, type 'now'\n"))
+        self.dateTo = self.dateTo.split("/")
+        if not len(self.dateTo) == 3:
+            self.dateTo = ["0", "0", "0"]
+
+        self.level = input("What level events? Type '0' for all, '1' for Major, '2' for National, '3' for Regional or '-4' for all except local.\n")
+        
+        self.assoc = input("[opt] Specify region: BOF, BSOA, EAOA, EMOA, NEOA, NIOA, NWOA, SCOA, SEOA, SOA, SWOA, WMOA, WOA, YHOA, all.\n").upper()
+        if self.assoc in self.associations:
+            self.assoc_num = self.associations[self.assoc]
+        else:
+            self.assoc_num = 0
+
+        self.host_club = input("[opt] Specify host club abbr. or 'any'\n").upper()
+        if self.host_club in listofclubs:
+            self.host_club_num = listofclubs[self.host_club]
+        else:
+            self.host_club_num = 0
+
+        if str(input("Search by 'age' or 'club'?\n")) == "age":
+            self.searchQuery = agetoyears()
+            self.searchType = "age"
+        else:
+            self.searchQuery = str(input("Which club do you want to search for? (use abbr.)\n")).upper()
+            self.searchType = "club"
 
 
+#GET SEARCH INFO
+SearchInfo = Params()
+website = ("https://www.britishorienteering.org.uk/index.php?page=0&evt_name=&evt_postcode=&evt_radius=0&evt_level={}&evt_type=0&event_club={}&evt_start_d={}&evt_start_m={}&evt_start_y={}&evt_end_d={}&evt_end_m={}&evt_end_y={}&evt_assoc={}&evt_start=1577836800&evt_end=1585907978&perpage=100&bSearch=1&pg=results".format(SearchInfo.level, SearchInfo.host_club_num, SearchInfo.dateFrom[0], SearchInfo.dateFrom[1], SearchInfo.dateFrom[2], SearchInfo.dateTo[0], SearchInfo.dateTo[1], SearchInfo.dateTo[2], SearchInfo.assoc_num))
+print("Searching all current {} level {} results hosted by {} from {}/{}/{} to {}/{}/{} in the {} region.".format(SearchInfo.searchQuery, SearchInfo.level, SearchInfo.host_club, SearchInfo.dateFrom[0], SearchInfo.dateFrom[1], SearchInfo.dateFrom[2], SearchInfo.dateTo[0], SearchInfo.dateTo[1], SearchInfo.dateTo[2], SearchInfo.assoc))
 
+#SET UP SOUP
+html = requests.get(website).text
+from bs4 import BeautifulSoup
+soup = BeautifulSoup(html, 'html.parser')
+import re
+hyperlinks = []
+eventDict = {}
+keyno = 1
 
-
-
-
-
+#EXTRACT EVENT LINKS
 eventTable = soup.table
 for row in eventTable.tbody.findAll("tr"):
     number = 1
@@ -194,9 +244,13 @@ for row in eventTable.tbody.findAll("tr"):
     eventDict[keyno] = minidict
     keyno += 1
 
-
 for x in eventDict:
     if "url" in eventDict[x]:
         eventpage = ("https://www.britishorienteering.org.uk{}".format(eventDict[x]["url"]))
         eventvenue = eventDict[x]["venue"]
-        getEventResults(eventpage, eventvenue, searchClub)
+        getEventResults(eventpage, eventvenue, SearchInfo)
+
+if len(eventDict) == 100:
+    print("Reached event limit - 100 events scraped")
+else:
+    print("Finished - {} events scraped".format(len(eventDict)))
