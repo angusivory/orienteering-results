@@ -2,7 +2,10 @@ import requests
 import datetime
 now = datetime.datetime.now()
 
+#add option to not search for club or age class
 #add location search? - 25 miles of inputted postcode, or, ideally, looks up postcode from a town the user enters
+#add option to search for course at events? although the course names differ for each so maybe not
+#make use of M or W, or take it out so people don't think it looks for one but shows both.
 
 searchYOBs = []
 listofclubs = {"AIRE": 23, "AROS": 147, "AUOC": 158, "AYROC": 58, "BADO": 89, "BAOC": 117, 
