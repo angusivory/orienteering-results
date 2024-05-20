@@ -1,0 +1,91 @@
+<!Doctype html>
+<html>
+<head>
+    <title>Ozone</title>
+    <link rel="stylesheet" type="text/css" href="scraper.css">
+    <script src="scraper.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="w3-sidebar w3-bar-block w3-border-right" style="display:none" id="sidebar">
+            <button onclick="w3_close()" class="w3-bar-item w3-large">Close &times;</button>
+            <a href="#news" class="w3-bar-item w3-button">News</a>
+            <a href="#contact" class="w3-bar-item w3-button">Contact</a>
+            <a href="#about" class="w3-bar-item w3-button">About</a>
+        </div>
+        <button class="w3-button w3-orange w3-xlarge" onclick="open_menu()">☰</button>
+
+        
+        <h1><b style="color:orange">O</b>zone</h1><br><br>
+        
+        <div id="border">
+            
+            <input onclick="expandSearch()" type="text" id="searchbar" placeholder="find results...">
+            
+            <div id="searchform">
+                <h2>Please fill in the required fields then click submit to get results.</h2>
+                <form name="searchParams">
+                    <label onmouseover="dateFromInfo('block')" onmouseout="dateFromInfo('none')" for="dateFrom">Date from:</label><br>
+                    <input type="text" id="dateFrom" name="dateFrom" placeholder="dd/mm/yyyy"><br>
+                    <label onmouseover="dateToInfo('block')" onmouseout="dateToInfo('none')" for="dateTo">End date:</label><br>
+                    <input type="text" id="dateTo" name="dateTo" placeholder="dd/mm/yyyy"><br>
+                    <label onmouseover="levelInfo('block')" onmouseout="levelInfo('none')" for="level">Level of event:</label><br>
+                    <select name="level" id="level">
+                        <option value="0">all</option>
+                        <option value="1">Major</option>
+                        <option value="2">National</option>
+                        <option value="3">Regional</option>
+                        <option value="4">Local</option>
+                        <option value="-4">All except local</option>
+                    </select><br>
+                    <label onmouseover="assocInfo('block')" onmouseout="assocInfo('none')" for="assoc">Association:</label><br>
+                    <select name="assoc" id="assoc">
+                        <option value="all">all</option>
+                        <option value="BOF">BOF</option>
+                        <option value="BSOA">BSOA</option>
+                        <option value="EAOA">EAOA</option>
+                        <option value="EMOA">EMOA</option>
+                        <option value="NEOA">NEOA</option>
+                        <option value="NIOA">NIOA</option>
+                        <option value="NWOA">NWOA</option>
+                        <option value="SCOA">SCOA</option>
+                        <option value="SEOA">SEOA</option>
+                        <option value="SOA">SOA</option>
+                        <option value="SWOA">SWOA</option>
+                        <option value="WMOA">WMOA</option>
+                        <option value="WOA">WOA</option>
+                        <option value="YHOA">YHOA</option> 
+                        </select><br>
+                    <label onmouseover="hostClubInfo('block')" onmouseout="hostClubInfo('none')" for="host_club">Host club:</label><br>
+                    <input type="text" id="host_club" name="host_club"><br>
+                    
+                    <label for="typeofsearch"><strong style="color:red;">*</strong>Search by <strong>club</strong> or <strong>age class</strong>:</label><br>
+                    <input type="radio" name="typeofsearch" value="club" required>Club<br>
+                    <input type="radio" name="typeofsearch" value="age class" required>Age class<br>
+
+                    <label onmouseover="searchQueryInfo('block')" onmouseout="searchQueryInfo('none')" for="searchQuery"><strong style="color:red;">*</strong>Search Query:</label><br>
+                    <input type="text" id="searchQuery" name="searchQuery" required><br><br>
+                    <input class="submit" type="submit" value="Get Results">
+                </form>
+            </div>
+        </div>
+        
+
+        <h2 id="infoDateFrom">Choose the date from which to get results, entered as dd/mm/yyyy.</h2>
+        <h2 id="infoDateTo">Choose the end date to get results until, entered as dd/mm/yyyy.</h2>
+        <h2 id="infoLevel">Type '0' for all, '1' for Major, '2' for National, '3' for Regional or '-4' for all except local.</h2>
+        <h2 id="infoAssoc">[opt] Specify region: BOF, BSOA, EAOA, EMOA, NEOA, NIOA, NWOA, SCOA, SEOA, SOA, SWOA, WMOA, WOA, YHOA, all.</h2>
+        <h2 id="infoHostClub">[opt] Specify host club abbr. or 'any'</h2>
+        <h2 id="infoAgeClass">Which age class do you want to search for? (e.g. M14, W21)</h2>
+        <h2 id="infoClub">Which club do you want to search for? (use abbr.)</h2>
+        <h2 id="noRadioChecked">Please select an option above before filling in this field.</h2>
+    <div class="spacer"></div>
+    </div>
+
+    <footer class="footer">
+        <h3 style="float:left">powered by</h3>
+        <a href="https://www.interlopers.org.uk"><img src="../interlopers.jfif"></a>
+    </footer>
+</body>
+</html>
